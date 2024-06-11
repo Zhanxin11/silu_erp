@@ -7,9 +7,21 @@
           multiple
           placeholder="请选择商号"
           filterable
-          @change="selectPro(BusinesValue)"
+          @change="selectPro"
         >
-          <el-option label="全选" value="全选"></el-option>
+          <!-- <div class="select_up">
+            <el-button type="text" v-on:click="selectDevAll">
+              <i class="el-icon-circle-check" />
+              全选</el-button
+            >
+            <el-button type="text" v-on:click="selectDevReverse">
+              <i class="el-icon-copy-document" />
+              反选</el-button
+            >
+          </div> -->
+          <el-option label="全选" value="全选" @change="selectAll"
+            >全选</el-option
+          >
           <el-option
             v-for="item in BusinesOptions"
             :key="item.value"
@@ -20,21 +32,21 @@
         </el-select>
         <el-select
           style="padding: 0 10px"
-          v-model="BusinesValue"
+          v-model="teamValues"
           multiple
           placeholder="请选择团队"
         >
           <el-option
-            v-for="item in BusinesOptions"
+            v-for="item in teamOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
           >
           </el-option>
         </el-select>
-        <el-select v-model="BusinesValue" multiple placeholder="请选择运营">
+        <el-select v-model="OperationValues" multiple placeholder="请选择运营">
           <el-option
-            v-for="item in BusinesOptions"
+            v-for="item in Operations"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -43,12 +55,12 @@
         </el-select>
         <el-select
           style="padding: 0 10px"
-          v-model="BusinesValue"
+          v-model="spuValues"
           multiple
           placeholder="请选择spu"
         >
           <el-option
-            v-for="item in BusinesOptions"
+            v-for="item in spuOptions"
             :key="item.value"
             :label="item.label"
             :value="item.value"
@@ -63,6 +75,7 @@
         >
         </el-date-picker>
         <el-date-picker
+          style="margin: 0 10px"
           type="months"
           v-model="monthsValues"
           placeholder="选择一个或多个日期"
@@ -81,6 +94,9 @@
         border
         class="computed-table"
         :header-cell-style="headerCellStyle"
+        :cell-class-name="tableCellClassName"
+        :cell-style="setStyle"
+        @cell-click="cellClick"
       >
         <!-- 横向时间表头 -->
         <el-table-column
@@ -101,7 +117,6 @@
           >
           </el-table-column>
         </el-table-column>
-
         <!-- 纵向参数名表头 -->
         <el-table-column
           v-for="(time, index) in times"
@@ -134,7 +149,28 @@ export default {
       month: '',
       day: '',
       current: '',
+      checkedAll: false,
+      menus: [],
       BusinesOptions: [
+        {
+          value: '选项1',
+          label: '001'
+        },
+        {
+          value: '选项2',
+          label: '002'
+        },
+        {
+          value: '选项3',
+          label: '003'
+        },
+        {
+          value: '选项4',
+          label: '004'
+        },
+      ],
+      teamValues: '',
+      teamOptions: [
         {
           value: '选项1',
           label: 'bg1'
@@ -152,14 +188,53 @@ export default {
           label: 'bg4'
         },
       ],
+      OperationValues: '',
+      Operations: [
+        {
+          value: '选项1',
+          label: 'a'
+        },
+        {
+          value: '选项2',
+          label: 'b'
+        },
+        {
+          value: '选项3',
+          label: 'c'
+        },
+        {
+          value: '选项4',
+          label: 'd'
+        },
+      ],
+      spuValues: '',
+      spuOptions: [
+        {
+          value: '选项1',
+          label: 'spu1'
+        },
+        {
+          value: '选项2',
+          label: 'spu2'
+        },
+        {
+          value: '选项3',
+          label: 'spu3'
+        },
+        {
+          value: '选项4',
+          label: 'spu4'
+        },
+      ],
       parameters: ['订单量', '销售件数', '每单件数', 'GMV', '利润', '利润率', '固定占比', '促销占比', '退款占比', '仓储占比', '回款率', '有效sku计数', '单sku均销量', '发货目标', '年度目标', '发货目标完成率', '年度目标完成率', '平均在库数量', '平均在途数量', '平均在库周转天数', '平均在途周转天数', '总周转天数', '汇总'],
-      times: []
+      times: [],
     }
   },
   mounted() {
     this.getDate()
-    // console.log(this.getDate(), this.times, 'shijian')
     this.tableData = this.generateTableData()
+    // this.BusinesValue = this.BusinesOptions.length > 0 ? this.BusinesOptions.slice(0, this.BusinesOptions.length).map(item => item.value) : []
+    // console.log(this.BusinesValue, '选项')
   },
   methods: {
     generateTableData() {
@@ -208,7 +283,6 @@ export default {
       this.month = month.toString().replace(/\b(0+)/gi, "")
       this.start = this.date[0].substring(8, 10).replace(/\b(0+)/gi, "")
       this.end = this.date[1].substring(8, 10).replace(/\b(0+)/gi, "")
-      // console.log(this.date, startTime, endTime, startMonth, this.start, this.end)
       this.changeDate(this.year, startMonth, this.month, this.start, this.end)
     },
     // 截取展示时间段
@@ -251,8 +325,53 @@ export default {
       }
       return {} // 其他列使用默认样式
     },
-    selectPro(value) {
-      console.log(value)
+    // 商号全选
+    selectAll() {
+      if (this.menus.length < this.BusinesOptions.length) {
+        this.menus = []
+        this.BusinesOptions.map((item) => {
+          console.log(item)
+          this.menus.push(item.name)
+        })
+        this.menus.unshift('全选')
+      } else {
+        this.menus = []
+      }
+      console.log(this.menus, 'this.menus')
+    },
+    // 商号下拉
+    selectPro(val) {
+      if (!val.includes('全选') && val.lenght === this.BusinesOptions.lenght) {
+        this.menus.unshift('全选')
+      } else if (val.includes('全选') && (val.length - 1) < this.BusinesOptions.length) {
+        return item !== '全选'
+      }
+    },
+    //  全选
+    selectDevAll() { },
+    // 反选
+    selectDevReverse() { },
+    //  获取单元格
+    tableCellClassName({ row, column, rowIndex, columnIndex }) {
+      row.index = rowIndex
+      column.index = columnIndex
+    },
+    // 获取单元格索引
+    cellClick(row, column, cell, event) {
+      // console.log(row.index, column.index)
+    },
+    // 设置单元格样式
+    setStyle({ row, column, rowIndex, columnIndex }) {
+      var styleCol = ''
+      // console.log(columnIndex, rowIndex, row, column, columnIndex === 0, 'columnIndex')
+      if (columnIndex === 0 && rowIndex === 0) {
+        row.values.forEach(item => {
+          if (item >= 30) {
+            styleCol = 'background: pink !important;color:white'
+            return
+          }
+        })
+      }
     }
   }
 }
