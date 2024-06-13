@@ -7,19 +7,11 @@
           multiple
           placeholder="请选择商号"
           filterable
+          collapse-tags
           @change="selectPro"
+          @remove-tag="removeTag"
         >
-          <!-- <div class="select_up">
-            <el-button type="text" v-on:click="selectDevAll">
-              <i class="el-icon-circle-check" />
-              全选</el-button
-            >
-            <el-button type="text" v-on:click="selectDevReverse">
-              <i class="el-icon-copy-document" />
-              反选</el-button
-            >
-          </div> -->
-          <el-option label="全选" value="全选" @change="selectAll"
+          <el-option label="全选" value="全选" @click.native="selectAll"
             >全选</el-option
           >
           <el-option
@@ -48,7 +40,6 @@
           <el-option
             v-for="item in Operations"
             :key="item.value"
-            :label="item.label"
             :value="item.value"
           >
           </el-option>
@@ -150,7 +141,6 @@ export default {
       day: '',
       current: '',
       checkedAll: false,
-      menus: [],
       BusinesOptions: [
         {
           value: '选项1',
@@ -327,24 +317,45 @@ export default {
     },
     // 商号全选
     selectAll() {
-      if (this.menus.length < this.BusinesOptions.length) {
-        this.menus = []
+      console.log(this.BusinesValue.length, 111)
+      if (this.BusinesValue.length < this.BusinesOptions.length) {
+        this.BusinesValue = []
         this.BusinesOptions.map((item) => {
           console.log(item)
-          this.menus.push(item.name)
+          this.BusinesValue.push(item.value)
         })
-        this.menus.unshift('全选')
+        this.BusinesValue.unshift('全选')
+        console.log(this.BusinesValue.length)
       } else {
-        this.menus = []
+        this.BusinesValue = []
       }
-      console.log(this.menus, 'this.menus')
+      console.log(this.BusinesValue, 'this.BusinesValue')
     },
     // 商号下拉
     selectPro(val) {
-      if (!val.includes('全选') && val.lenght === this.BusinesOptions.lenght) {
-        this.menus.unshift('全选')
-      } else if (val.includes('全选') && (val.length - 1) < this.BusinesOptions.length) {
-        return item !== '全选'
+      if (!val.includes('全选') && val.length === this.BusinesOptions.length) {
+        console.log(val.length, this.BusinesOptions.length)
+        if (!this.BusinesValue.includes('全选')) {
+          this.BusinesValue.unshift('全选')
+        }
+      } else if (this.BusinesValue.includes('全选') && val.length !== this.BusinesOptions.length) {
+        console.log(val.length, this.BusinesOptions.length)
+        this.BusinesValue = this.BusinesValue.filter((item) => {
+          console.log(item, 'item !== 全选')
+          return item !== '全选'
+        })
+      } else if (this.BusinesValue.includes('全选') && val.length < this.BusinesOptions.length + 1) {
+        this.BusinesValue = this.BusinesValue.filter((item) => {
+          console.log(item, 'item !== 全选')
+          return item !== '全选'
+        })
+      }
+      console.log(this.BusinesValue, this.BusinesValue.length, val, val.length, Array.isArray(val), 'this.BusinesValue, val.lenght')
+    },
+    // 删除tag
+    removeTag(val) {
+      if (val === '全选') {
+        this.BusinesValue = []
       }
     },
     //  全选
