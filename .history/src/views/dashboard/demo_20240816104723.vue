@@ -6,23 +6,72 @@
           @change="selectPro" @remove-tag="removeTag">
           <el-option label="全选" value="全选" @click.native="selectAll">全选</el-option>
           <el-option v-for="item in BusinesOptions" :key="item.value" :label="item.label" :value="item.value">
+        <el-select
+          v-model="BusinesValue"
+          multiple
+          placeholder="请选择商号"
+          filterable
+          @change="selectPro(BusinesValue)"
+        >
+          <el-option label="全选" value="全选"></el-option>
+          <el-option
+            v-for="item in BusinesOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
         <el-select style="padding: 0 10px" v-model="teamValues" multiple collapse-tags filterable placeholder="请选择团队">
           <el-option v-for="item in teamOptions" :key="item.value" :label="item.label" :value="item.value">
+        <el-select
+          style="padding: 0 10px"
+          v-model="BusinesValue"
+          multiple
+          placeholder="请选择团队"
+        >
+          <el-option
+            v-for="item in BusinesOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
         <el-select v-model="OperationValues" multiple filterable collapse-tags placeholder="请选择运营">
           <el-option v-for="item in Operations" :key="item.value" :value="item.value">
+        <el-select v-model="BusinesValue" multiple placeholder="请选择运营">
+          <el-option
+            v-for="item in BusinesOptions"
+            :key="item.value"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
         <el-select style="padding: 0 10px" v-model="spuValues" multiple filterable placeholder="请选择spu">
           <el-option v-for="item in spuOptions" :key="item.value" :label="item.label" :value="item.value">
+        <el-select
+          style="padding: 0 10px"
+          v-model="BusinesValue"
+          multiple
+          placeholder="请选择spu"
+        >
+          <el-option
+            v-for="item in BusinesOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          >
           </el-option>
         </el-select>
         <el-date-picker v-model="weekValue" type="week" format="yyyy 第 WW 周" placeholder="选择周">
         </el-date-picker>
         <el-date-picker style="margin: 0 10px" type="months" v-model="monthsValues" placeholder="选择一个或多个日期">
+        <el-date-picker
+          type="months"
+          v-model="monthsValues"
+          placeholder="选择一个或多个日期"
+        >
         </el-date-picker>
         <el-date-picker type="dates" v-model="dateValues" placeholder="选择一个或多个日期">
         </el-date-picker>
@@ -30,36 +79,58 @@
       <el-table style="width: 100%; height: 100%; margin-top: 20px" :data="tableData" border class="computed-table"
         :header-cell-style="headerCellStyle" :cell-class-name="tableCellClassName" :cell-style="setStyle"
         @cell-click="cellClick">
+      <el-table
+        style="width: 100%; height: 100%; margin-top: 20px"
+        :data="tableData"
+        border
+        class="computed-table"
+        :header-cell-style="headerCellStyle"
+      >
         <!-- 横向时间表头 -->
         <el-table-column prop="parameter" label="时间" width="200" align="center" fixed highlight-current-row>
           <el-table-column prop="parameter" label="参数" align="center" width="200" fixed
             style="background-color: aliceblue">
           </el-table-column>
         </el-table-column>
+
         <!-- 纵向参数名表头 -->
         <el-table-column v-for="(time, index) in times" :key="index" :label="time" :header-row-style="headerCellStyle"
           align="center" width="100">
           <template slot-scope="scope">
-            <span class="inner_span" :style="classObje(scope.row.values[index].value,scope.$index)"
-              @click="changeValue(scope.$index,scope.row)" v-if="!scope.row.values[index].isCheck"> {{
-              scope.row.values[index].value}}</span>
+            <span class="inner_span" :style="classObje(scope.row.values[index].value, scope.$index)"
+              @click="changeValue(scope.$index, scope.row)" v-if="!scope.row.values[index].isCheck">
+              {{ scope.row.values[index].value }}</span>
             <el-input v-else ref="inputs" @keydown.enter.native="handeBlur(scope.row, index)"
               v-model="scope.row.values[index].value"></el-input>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="汇总" width="150" align="center">
+        <el-table-column fixed="right" label="汇总" prop="sum" width="250" height="50" align="center">
           <template slot-scope="scope">
-            <div id="main_" style="width:70%;height:30px;margin: 0 auto;"></div>
+            <div :ref="'echarts_' + scope.$index" style="width: 95%; height: 50px; margin: 0 auto; z-index: 999">
+              <!-- {{ scope.$index }} -->
+            </div>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="100" align="center">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button v-show="scope.row.parameter != 'GMV'" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <!-- <div>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column label="汇总" prop="sum" width="1350" align="center">
+          <template slot-scope="scope">
+            <div
+              :id="'echarts_' + scope.$index"
+              style="width: 95%; height: 500px; margin: 0 auto"
+            > </div>
+          </template>
+        </el-table-column></el-table
+      >
+    </div> -->
   </div>
 </template>
 
@@ -168,7 +239,7 @@
       this.getDate()
       this.tableData = this.generateTableData()
       this.addTrue()
-      this.initEcharts()
+      this.fetchData()
     },
     methods: {
       generateTableData() {
@@ -340,60 +411,95 @@
       changeValue(index, row) {
         console.log(index, row.values, 'chenge', new Date())
       },
-      // 添加图表
-      initEcharts() {
+      // 添加趋势图数据
+      fetchData() {
         this.stateList = this.tableData.map(item => {
           return item.values.map(i => {
             return i.value
           })
         })
-        console.log(this.tableData, this.stateList, 'this.tableData, this.stateList')
-        this.$nextTick(function () {
-          for (let i = 0; i < this.stateList.length; i++) {
-            let myChart = echarts.init(document.getElementById("main_"))
-            // console.log(myChart)
-            // 绘制图表
-            myChart.setOption({
-              xAxis: {
-                show: false, //取消显示坐标轴,坐标轴刻度, 坐标值(如果是y轴,默认的网格线也会取消显示)
-                type: 'category',
-                boundaryGap: false,
-                splitLine: {
-                  show: false
+        this.tableData.map((item, index) => {
+          item.sum = this.stateList[index]
+        })
+        this.initEcharts()
+      },
+      // 添加图表
+      initEcharts() {
+        this.$nextTick(() => {
+          this.tableData.forEach((item, index) => {
+            const chartDom = this.$refs[`echarts_${index}`]   // 注意这里需要访问 DOM 元素
+            if (chartDom) {
+              const myChart = echarts.init(chartDom)
+              // console.log(chartDom, item.sum)
+              myChart.setOption({
+                xAxis: {
+                  show: false, //取消显示坐标轴,坐标轴刻度, 坐标值(如果是y轴,默认的网格线也会取消显示)
+                  type: 'category',
+                  boundaryGap: false,
+                  splitLine: {
+                    show: false
+                  },
+                  data: this.times
                 },
-                data: []
-              },
-              grid: {
-                left: "0",
-                top: "0",
-                right: "0",
-                bottom: "0",
-                containLabel: true,
-              },
-              yAxis: {
-                axisLabel: { // 取消显示坐标值
-                  show: false
+                grid: {
+                  left: "0",
+                  top: "0",
+                  right: "0",
+                  bottom: "0",
+                  containLabel: false,
                 },
-                splitLine: { //取消网格线
-                  show: false
+                yAxis: {
+                  axisLabel: { // 取消显示坐标值
+                    show: false
+                  },
+                  splitLine: { //取消网格线
+                    show: false
+                  },
+                  type: 'value'
                 },
-                type: 'value'
-              },
-              series: [
-                {
-                  symbol: "none",
-                  smooth: true,//平滑
-                  type: "line",
-                  data: this.stateList[0],
-                  areaStyle: {}
+                series: [
+                  {
+                    symbol: "none",
+                    smooth: true,//平滑
+                    type: "line",
+                    data: item.sum,
+                    areaStyle: {}
+                  }
+                ],
+                tooltip: {
+                  trigger: 'axis',
+                  position: function TooltipPosition(point, params, dom, rect, size) {
+                    const [mouseX, mouseY] = point
+                    const [tooltipWidth, tooltipHeight] = size.contentSize
+                    console.log(point, size.contentSize)
+                    let [posX, posY] = [0, 0] // tooltip的显示位置
+                    // x位置判断
+                    if (mouseX < tooltipWidth) {
+                      // 如果左边放不下，tooltip的左侧位置=鼠标X
+                      posX = mouseX
+                    } else {
+                      posX = mouseX - tooltipWidth
+                    }
+                    // if (mouseY < tooltipHeight) {
+                    //   // 如果上边放不下，tooltip的上侧位置=鼠标Y
+                    //   posY = mouseY
+                    // } else {
+                    //   posY = mouseY - tooltipHeight
+                    // }
+                    // return [posX, posY]
+                    return [posX, '10%']
+                  }
                 }
-              ]
-            })
-            console.log(this.stateList, 10, this)
-            window.onresize = function () { // 自适应大小
-              myChart.resize()
+
+              })
+              // 监听窗口大小变化
+              // console.log(item.sum, this.times, this.tableData, 'zzz')
+              window.addEventListener('resize', function () {
+                myChart.resize()
+              })
             }
-          }
+          })
+
         })
       },
     },
@@ -412,6 +518,141 @@
       },
     }
   }
+export default {
+  data() {
+    return {
+      tableData: [],
+      BusinesValue: [],
+      weekValue: '',
+      monthsValues: '',
+      dateValues: '',
+      date: '',
+      year: '',
+      month: '',
+      day: '',
+      current: '',
+      BusinesOptions: [
+        {
+          value: '选项1',
+          label: 'bg1'
+        },
+        {
+          value: '选项2',
+          label: 'bg2'
+        },
+        {
+          value: '选项3',
+          label: 'bg3'
+        },
+        {
+          value: '选项4',
+          label: 'bg4'
+        },
+      ],
+      parameters: ['订单量', '销售件数', '每单件数', 'GMV', '利润', '利润率', '固定占比', '促销占比', '退款占比', '仓储占比', '回款率', '有效sku计数', '单sku均销量', '发货目标', '年度目标', '发货目标完成率', '年度目标完成率', '平均在库数量', '平均在途数量', '平均在库周转天数', '平均在途周转天数', '总周转天数', '汇总'],
+      times: []
+    }
+  },
+  mounted() {
+    this.getDate()
+    // console.log(this.getDate(), this.times, 'shijian')
+    this.tableData = this.generateTableData()
+  },
+  methods: {
+    generateTableData() {
+      const tableData = this.parameters.map(parameter => ({
+        parameter: parameter,
+        values: this.generateParameterValues()
+      }))
+      return tableData
+    },
+    generateParameterValues() {
+      return Array.from({ length: 48 }, (_, i) =>
+        Math.floor(Math.random() * 100)
+      ) // 48个时间段，每30分钟一个
+    },
+    // generateTimeLabels() {
+    //   const times = []
+    //   var date = new Date()
+    //   var year = date.getFullYear()
+    //   var month = date.getMonth() + 1
+    //   var day = date.getDate()
+    //   var todayDateString = date.toISOString().split('T')[0] // 格式为 "YYYY-MM-DD"
+    //   console.log(date, year, month, day, todayDateString)
+    //   for (let hour = 0; hour < 24; hour++) {
+    //     for (let minute = 0; minute < 60; minute += 30) {
+    //       const time = `${hour.toString().padStart(2, '0')}:${minute
+    //         .toString()
+    //         .padStart(2, '0')}`
+    //       times.push(time)
+    //     }
+    //   }
+    //   return times
+    // },
+    getDate() {
+      var date = new Date()
+      var year = date.getFullYear()
+      var month = date.getMonth() + 1
+      var day = date.getDate()
+      if (month >= 1 && month <= 9) {
+        month = '0' + month
+      }
+      var startMonth = date.getMonth()
+      var startTime = year + '-' + month + '-' + '01'
+      var endTime = year + '-' + month + '-' + day
+      this.date = [startTime, endTime]
+      this.year = this.date[0].substring(0, 4)
+      this.month = month.toString().replace(/\b(0+)/gi, "")
+      this.start = this.date[0].substring(8, 10).replace(/\b(0+)/gi, "")
+      this.end = this.date[1].substring(8, 10).replace(/\b(0+)/gi, "")
+      // console.log(this.date, startTime, endTime, startMonth, this.start, this.end)
+      this.changeDate(this.year, startMonth, this.month, this.start, this.end)
+    },
+    // 截取展示时间段
+    changeDate(year, startMonth, month, start, end) {
+      var empty = []
+      if (startMonth == 1 || startMonth == 3 || startMonth == 5 || startMonth == 7 || startMonth == 8 || startMonth == 10 || startMonth == 12) {
+        for (let i = 1; i <= 31; i++) {
+          this.current = year + '-' + startMonth + '-' + i
+          empty.push(this.current)
+        }
+      } else if (startMonth == 1 || startMonth == 4 || startMonth == 6 || startMonth == 9 || startMonth == 11) {
+        for (let i = 1; i <= 30; i++) {
+          this.current = year + '-' + startMonth + '-' + i
+          empty.push(this.current)
+        }
+      } else {
+        if (((year % 4) == 0) && ((year % 100) != 0) || ((year % 400) == 0)) {
+          for (let i = 1; i <= 29; i++) {
+            this.current = year + '-' + startMonth + '-' + i
+            empty.push(this.current)
+          }
+        } else {
+          for (let i = 1; i <= 28; i++) {
+            this.current = year + '-' + startMonth + '-' + i
+            empty.push(this.current)
+          }
+        }
+      }
+      for (var i = start; i <= end; i++) {
+        this.current = year + '-' + month + '-' + i
+        empty.push(this.current)
+      }
+      // console.log(empty, 'empty')
+      this.times = empty
+    },
+    // 对表头样式进行修改
+    headerCellStyle({ column, columnIndex }) {
+      if (columnIndex === 0 || columnIndex) {
+        return { backgroundColor: '#eeeeee', color: '#999' }
+      }
+      return {} // 其他列使用默认样式
+    },
+    selectPro(value) {
+      console.log(value)
+    }
+  }
+}
 </script>
 <style lang="scss">
   .el-table {

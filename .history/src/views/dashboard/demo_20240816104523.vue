@@ -36,30 +36,45 @@
             style="background-color: aliceblue">
           </el-table-column>
         </el-table-column>
+
         <!-- 纵向参数名表头 -->
         <el-table-column v-for="(time, index) in times" :key="index" :label="time" :header-row-style="headerCellStyle"
           align="center" width="100">
           <template slot-scope="scope">
-            <span class="inner_span" :style="classObje(scope.row.values[index].value,scope.$index)"
-              @click="changeValue(scope.$index,scope.row)" v-if="!scope.row.values[index].isCheck"> {{
-              scope.row.values[index].value}}</span>
+            <span class="inner_span" :style="classObje(scope.row.values[index].value, scope.$index)"
+              @click="changeValue(scope.$index, scope.row)" v-if="!scope.row.values[index].isCheck">
+              {{ scope.row.values[index].value }}</span>
             <el-input v-else ref="inputs" @keydown.enter.native="handeBlur(scope.row, index)"
               v-model="scope.row.values[index].value"></el-input>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" label="汇总" width="150" align="center">
+        <el-table-column fixed="right" label="汇总" prop="sum" width="250" height="50" align="center">
           <template slot-scope="scope">
-            <div id="main_" style="width:70%;height:30px;margin: 0 auto;"></div>
+            <div :ref="'echarts_' + scope.$index" style="width: 95%; height: 50px; margin: 0 auto; z-index: 999">
+              <!-- {{ scope.$index }} -->
+            </div>
           </template>
         </el-table-column>
         <el-table-column fixed="right" label="操作" width="100" align="center">
           <template slot-scope="scope">
             <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button v-show="scope.row.parameter != 'GMV'" type="text" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <!-- <div>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column label="汇总" prop="sum" width="1350" align="center">
+          <template slot-scope="scope">
+            <div
+              :id="'echarts_' + scope.$index"
+              style="width: 95%; height: 500px; margin: 0 auto"
+            > </div>
+          </template>
+        </el-table-column></el-table
+      >
+    </div> -->
   </div>
 </template>
 
@@ -168,7 +183,7 @@
       this.getDate()
       this.tableData = this.generateTableData()
       this.addTrue()
-      this.initEcharts()
+      this.fetchData()
     },
     methods: {
       generateTableData() {
@@ -340,61 +355,95 @@
       changeValue(index, row) {
         console.log(index, row.values, 'chenge', new Date())
       },
-      // 添加图表
-      initEcharts() {
+      // 添加趋势图数据
+      fetchData() {
         this.stateList = this.tableData.map(item => {
           return item.values.map(i => {
             return i.value
           })
         })
-        console.log(this.tableData, this.stateList, 'this.tableData, this.stateList')
-        this.$nextTick(function () {
-          console.log(this.stateList.lengt,'')
-          for (let i = 0; i < this.stateList.length; i++) {
-            let myChart = echarts.init(document.getElementById("main_"))
-            // console.log(myChart)
-            // 绘制图表
-            myChart.setOption({
-              xAxis: {
-                show: false, //取消显示坐标轴,坐标轴刻度, 坐标值(如果是y轴,默认的网格线也会取消显示)
-                type: 'category',
-                boundaryGap: false,
-                splitLine: {
-                  show: false
+        this.tableData.map((item, index) => {
+          item.sum = this.stateList[index]
+        })
+        this.initEcharts()
+      },
+      // 添加图表
+      initEcharts() {
+        this.$nextTick(() => {
+          this.tableData.forEach((item, index) => {
+            const chartDom = this.$refs[`echarts_${index}`]   // 注意这里需要访问 DOM 元素
+            if (chartDom) {
+              const myChart = echarts.init(chartDom)
+              // console.log(chartDom, item.sum)
+              myChart.setOption({
+                xAxis: {
+                  show: false, //取消显示坐标轴,坐标轴刻度, 坐标值(如果是y轴,默认的网格线也会取消显示)
+                  type: 'category',
+                  boundaryGap: false,
+                  splitLine: {
+                    show: false
+                  },
+                  data: this.times
                 },
-                data: []
-              },
-              grid: {
-                left: "0",
-                top: "0",
-                right: "0",
-                bottom: "0",
-                containLabel: true,
-              },
-              yAxis: {
-                axisLabel: { // 取消显示坐标值
-                  show: false
+                grid: {
+                  left: "0",
+                  top: "0",
+                  right: "0",
+                  bottom: "0",
+                  containLabel: false,
                 },
-                splitLine: { //取消网格线
-                  show: false
+                yAxis: {
+                  axisLabel: { // 取消显示坐标值
+                    show: false
+                  },
+                  splitLine: { //取消网格线
+                    show: false
+                  },
+                  type: 'value'
                 },
-                type: 'value'
-              },
-              series: [
-                {
-                  symbol: "none",
-                  smooth: true,//平滑
-                  type: "line",
-                  data: this.stateList[0],
-                  areaStyle: {}
+                series: [
+                  {
+                    symbol: "none",
+                    smooth: true,//平滑
+                    type: "line",
+                    data: item.sum,
+                    areaStyle: {}
+                  }
+                ],
+                tooltip: {
+                  trigger: 'axis',
+                  position: function TooltipPosition(point, params, dom, rect, size) {
+                    const [mouseX, mouseY] = point
+                    const [tooltipWidth, tooltipHeight] = size.contentSize
+                    console.log(point, size.contentSize)
+                    let [posX, posY] = [0, 0] // tooltip的显示位置
+                    // x位置判断
+                    if (mouseX < tooltipWidth) {
+                      // 如果左边放不下，tooltip的左侧位置=鼠标X
+                      posX = mouseX
+                    } else {
+                      posX = mouseX - tooltipWidth
+                    }
+                    // if (mouseY < tooltipHeight) {
+                    //   // 如果上边放不下，tooltip的上侧位置=鼠标Y
+                    //   posY = mouseY
+                    // } else {
+                    //   posY = mouseY - tooltipHeight
+                    // }
+                    // return [posX, posY]
+                    return [posX, '10%']
+                  }
                 }
-              ]
-            })
-            console.log(this.stateList, 10, this)
-            window.onresize = function () { // 自适应大小
-              myChart.resize()
+
+              })
+              // 监听窗口大小变化
+              // console.log(item.sum, this.times, this.tableData, 'zzz')
+              window.addEventListener('resize', function () {
+                myChart.resize()
+              })
             }
-          }
+          })
+
         })
       },
     },
