@@ -1,0 +1,43 @@
+<!--
+ * @Author: zhanxin11 749959696@qq.com
+ * @Date: 2024-08-26 09:41:22
+ * @LastEditors: zhanxin11 749959696@qq.com
+ * @LastEditTime: 2024-08-26 10:32:31
+ * @FilePath: \vue-element-admin\src\views\dashboard\datav.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+
+<template>
+  <div class="app-container">
+    <div class="father-box">
+      <dv-border-box-11 title="近期数据"></dv-border-box-11>
+    </div>
+  </div>
+</template>
+<script>
+  import *as echarts from 'echarts'
+  export default {
+    components: {},
+    props: {},
+    data() {
+      return {
+      }
+    },
+    watch: {},
+    computed: {},
+    methods: {},
+    created() { },
+    mounted() { }
+  };
+</script>
+<style lang="scss" scoped>
+  .app-container {
+    background-color: black;
+    height: 90vh;
+  }
+
+  #dv-full-screen-container {
+    /* float: right; */
+    /* width: 80vh !important; */
+  }
+</style>
