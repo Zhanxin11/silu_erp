@@ -1,0 +1,97 @@
+<!--
+ * @Author: zhanxin11 749959696@qq.com
+ * @Date: 2024-09-04 18:01:17
+ * @LastEditors: zhanxin11 749959696@qq.com
+ * @LastEditTime: 2024-09-06 09:45:14
+ * @FilePath: \vue-element-admin\src\views\proManage\index.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<template>
+  <div class="app-container haplotype-detail default-scrollbar">
+    <el-row style="padding-bottom: 20px">
+      <el-button type="danger" @click="delProList">批量删除</el-button>
+      <el-button type="primary" @click="uploadExcel">批量上传</el-button>
+      <el-button type="primary" v-if="!isCheck" @click="changeProList">批量编辑</el-button>
+      <el-button type="primary" v-else @click="clearIscheck">取消编辑</el-button>
+      <el-button type="primary" @click="saveChange">保存编辑</el-button>
+      <el-button type="primary" @click="downloadExcel">下载</el-button>
+      <el-button type="info" @click="addpro">新增</el-button>
+    </el-row>
+    <el-table :data="tableData" border style="width: 100%">
+      <el-table-column prop="date" label="图片" width="150">
+      </el-table-column>
+      <el-table-column prop="name" label="商号" filter="table.firm">
+      </el-table-column>
+      <el-table-column prop="province" label="品牌">
+      </el-table-column>
+      <el-table-column prop="city" label="运营">
+      </el-table-column>
+      <el-table-column prop="address" label="大类">
+      </el-table-column>
+      <el-table-column prop="zip" label="产品线">
+      </el-table-column>
+      <el-table-column prop="zip" label="细分品线">
+      </el-table-column>
+      <el-table-column prop="zip" label="SPU">
+      </el-table-column>
+      <el-table-column prop="zip" label="父ASIN">
+      </el-table-column>
+      <el-table-column prop="zip" label="子ASIN">
+      </el-table-column>
+      <el-table-column prop="zip" label="SKU">
+      </el-table-column>
+      <el-table-column prop="zip" label="产品描述">
+      </el-table-column>
+      <el-table-column prop="zip" label="开售日期">
+      </el-table-column>
+      <el-table-column prop="zip" label="产品状态">
+      </el-table-column>
+      <el-table-column fixed="right" label="操作" width="150" align="center">
+        <template slot-scope="scope">
+          <el-button @click="handleClick(scope.row)" type="danger" size="small">删除</el-button>
+          <el-button type="text" size="small">编辑</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog title="新增" :visible.sync="dialogVisible" width="30%" :before-close="handleClose">
+      <el-form></el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {},
+    props: {},
+    data() {
+      return {
+        dialogVisible: false,
+        form: {}
+      }
+    },
+    watch: {},
+    computed: {},
+    methods: {
+      // 删除
+      delProList() { },
+      // 批量修改
+      changeProList() { },
+      // 批量上传
+      uploadExcel() { },
+      // 下载
+      downloadExcel() { },
+      // 新增
+      addpro() {
+        this.dialogVisible = true
+      },
+    },
+    created() { },
+    mounted() { }
+  };
+</script>
+<style lang="scss" scoped>
+</style>
