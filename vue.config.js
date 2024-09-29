@@ -32,8 +32,8 @@ module.exports = {
     after: require('./mock/mock-server.js'),
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: "http://121.41.171.227:8000",
-        // target: "http://192.168.5.174:8000",
+        // target: "http://121.41.171.227:8000",
+        target: "http://192.168.5.174:8000",
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: '' // 移除请求路径中的 '/api' 前缀
