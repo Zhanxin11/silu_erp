@@ -298,11 +298,11 @@
         // }
         const selected = value || []
         const storeOpPairs = []
-        const storeSet = new Set()
-        const opSet = new Map()
+        const storeSet = new Set() 
+        const opSet = new Map() 
 
         selected.forEach(path => {
-          const [storeId, category, itemValue] = path
+          const [storeId, category, itemValue] = path // 假设storeId是商号
           if (category === '运营') {
             if (!opSet.has(storeId)) {
               opSet.set(storeId, new Set())
@@ -317,7 +317,7 @@
                 if (ops.size > 0) {
                   // 找到匹配的运营，存储这对值并移除该运营以避免重复匹配
                   storeOpPairs.push({ store: itemValue, op: ops.values().next().value })
-                  ops.clear() // 清除已匹配的运营
+                  ops.clear() // 清除已匹配的运营，或者您可以选择不移除以保持状态
                 }
               }
             }
