@@ -86,8 +86,8 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="ops" label="运营" width="350px">
-          <el-select v-model="proFormValues.op_name" placeholder="请选择运营" filterable collapse-tags>
-            <el-option v-for="(item,index) in op" :key="index" :label="item" :value="item">
+          <el-select v-model="proFormValues." placeholder="请选择运营" filterable collapse-tags>
+            <el-option v-for="(item,index) in  op_name" :key="index" :label="item" :value="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -281,18 +281,10 @@
           if (i.store == v) {
             i.childen.map(item => {
               this.brand = item.brands
-              this.op = item.ops
+              this.op = this.ops
             })
-          } else if (i.store == d) {
-            console.log(111)
-            this.proFormValues.op_name = ''
-            this.proFormValues.brand_name = ''
           }
         })
-        // if (d) {
-        //   this.brand = ''
-        //   this.op = ''
-        // }
         console.log(this.store, this.op, this.brand, 'ces')
       }
     },

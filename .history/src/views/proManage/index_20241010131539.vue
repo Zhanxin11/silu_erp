@@ -2,7 +2,7 @@
  * @Author: zhanxin11 749959696@qq.com
  * @Date: 2024-09-04 18:01:17
  * @LastEditors: zhanxin11 749959696@qq.com
- * @LastEditTime: 2024-10-10 15:17:53
+ * @LastEditTime: 2024-10-10 13:15:38
  * @FilePath: \vue-element-admin\src\views\proManage\index.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -65,31 +65,13 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-dialog title="新增" :visible.sync="dialogVisible" width="50%" :inline="true">
+    <el-dialog title="新增" :visible.sync="dialogVisible" width="48%" :inline="true">
+
       <el-form :inline="true" label-width="80px" :model="proFormValues" ref="proFormValues" :rules="proRules">
-        <!-- <el-form-item prop="store_brands_ops" label="商号">
+        <el-form-item prop="store_brands_ops" label="商号">
           <el-cascader v-model="proFormValues.store_brands_ops" collapse-tags
-            :props="{ checkStrictly: true,multiple: true, }" :options="opsValue" clearable filterable>
+            :props="{ checkStrictly: true,multiple: true, }" :options="opsValue" clearable>
           </el-cascader>
-        </el-form-item> -->
-        <el-form-item prop="store_name" label="商号" width="350px">
-          <el-select v-model="proFormValues.store_name" placeholder="请选择商号" filterable collapse-tags>
-            <el-option v-for="(item,index) in proForm.store_brands_ops" :key="index" :label="item.store"
-              :value="item.store">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="brand" label="品牌" width="350px">
-          <el-select v-model="proFormValues.brand_name" placeholder="请选择品牌" filterable collapse-tags>
-            <el-option v-for="(item,index) in brand" :key="index" :label="item" :value="item">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item prop="ops" label="运营" width="350px">
-          <el-select v-model="proFormValues.op_name" placeholder="请选择运营" filterable collapse-tags>
-            <el-option v-for="(item,index) in op" :key="index" :label="item" :value="item">
-            </el-option>
-          </el-select>
         </el-form-item>
         <el-form-item prop="category" label="大类">
           <el-input v-model="proFormValues.category"> </el-input>
@@ -119,7 +101,7 @@
           <el-input v-model="proFormValues.sell_date"></el-input>
         </el-form-item>
         <el-form-item prop="status" label="产品状态" width="350px">
-          <el-select v-model="proFormValues.status" placeholder="产品状态" filterable collapse-tags>
+          <el-select v-model="proFormValues.status" placeholder="请选择运营(可多选)" filterable collapse-tags>
             <el-option v-for="(item,index) in proForm.status" :key="index" :label="item" :value="item">
             </el-option>
           </el-select>
@@ -171,155 +153,74 @@
         },
         rlues: {},
         fileList: [],
-        // opsValues: [
-        //   {
-        //     "store": "隆宁1店US",
-        //     "childen": [
-        //       {
-        //         "brands": [
-        //           "Jolly Chef"
-        //         ],
-        //       },
-        //       {
-        //         "ops": [
-        //           "戴倩倩",
-        //           "杨守朵",
-        //           "张月晴",
-        //           "袁海荣",
-        //           "郭凡",
-        //           "姜慧",
-        //           "孙雅婷",
-        //           "吴雯"
-        //         ]
-        //       }
-        //     ]
-        //   },
-        //   {
-        //     "store": "隆宁6店US",
-        //     "childen": [
-        //       {
-        //         "brands": [
-        //           "Jolly Chef"
-        //         ],
-        //       }, {
-        //         "ops": [
-        //           "杨守朵"
-        //         ]
-        //       }
-        //     ]
+        opsValues: [
 
-        //   },
-        // ],
-        opsValue: [
           {
-            value: '隆宁1店US',
-            label: '隆宁1店US',
-            disabled: true,
-            children: [{
-              value: '运营',
-              label: '运营',
-              disabled: true,
-              children: [{
-                value: '戴倩倩',
-                label: '戴倩倩'
-              }, {
-                value: '杨守朵',
-                label: '杨守朵'
-              }, {
-                value: '郭凡',
-                label: '郭凡'
-              }]
-            }, {
-              value: '品牌',
-              label: '品牌',
-              disabled: true,
-              children: [{
-                value: 'Jolly Chef',
-                label: 'Jolly Chef'
-              }]
-            }]
+            "store": "隆宁1店US",
+            "childen": [
+              {
+                "brands": [
+                  "Jolly Chef"
+                ],
+              },
+              {
+                "ops": [
+                  "戴倩倩",
+                  "杨守朵",
+                  "张月晴",
+                  "袁海荣",
+                  "郭凡",
+                  "姜慧",
+                  "孙雅婷",
+                  "吴雯"
+                ]
+              }
+            ]
           },
           {
-            value: '隆宁6店US',
-            label: '隆宁6店US',
-            disabled: true,
-            children: [{
-              value: '运营',
-              label: '运营',
-              disabled: true,
-              children: [{
-                value: '杨守朵',
-                label: '杨守朵'
-              }]
-            }, {
-              value: '店铺',
-              label: '店铺',
-              disabled: true,
-              children: [{
-                value: 'Jolly Chef',
-                label: 'Jolly Chef'
-              }]
-            }]
+            "store": "隆宁6店US",
+            "childen": [
+              {
+                "brands": [
+                  "Jolly Chef"
+                ],
+              }, {
+                "ops": [
+                  "杨守朵"
+                ]
+              }
+            ]
           },
         ],
-        brand: '',
-        store: '',
-        op: '',
         proRules: {
-          store_name: [{ required: true, validator: this.validateName, trigger: 'change' },]
+          store_brands_ops: [{ required: true, validator: this.validateName, trigger: 'change' },]
         }
       }
 
     },
-    watch: {
-      store(v, d) {
-        console.log(v, this.proForm)
-        let storeForm = this.proForm.store_brands_ops
-        console.log(storeForm)
-        storeForm.map(i => {
-          console.log(i.store, i)
-          if (i.store == v) {
-            i.childen.map(item => {
-              this.brand = item.brands
-              this.op = item.ops
-            })
-          } else if (i.store == d) {
-            console.log(111)
-            this.proFormValues.op_name = ''
-            this.proFormValues.brand_name = ''
-          }
-        })
-        // if (d) {
-        //   this.brand = ''
-        //   this.op = ''
-        // }
-        console.log(this.store, this.op, this.brand, 'ces')
-      }
-    },
+    watch: {},
     computed: {
-      // opsValue() {
-      //   const ops = this.opsValues.map(item => ({
-      //     ...item,
-      //     childen: item.childen.map(child => ({
-      //       ...child,
-      //       ops: child.ops || [],
-      //       brands: Array.isArray(child.brands) ? child.brands : [],
-      //     })),
-      //   }))
+      opsValue() {
+        const ops = this.opsValues.map(item => ({
+          ...item,
+          childen: item.childen.map(child => ({
+            ...child,
+            ops: child.ops || [],
+            brands: Array.isArray(child.brands) ? child.brands : [],
+          })),
+        }))
 
-      //   return ops.map(item => ({
-      //     value: item.store,
-      //     label: item.store,
-      //     children: item.childen
-      //       .flatMap(child => [
-      //         ...child.ops.map(op => ({ value: '运营--' + op, label: '运营--' + op })),
-      //         ...child.brands.map(brand => ({ value: '品牌--' + brand, label: '品牌--' + brand }))
-      //       ])
-      //   }))
-      // }
-      storeValue() {
-
+        return ops.map(item => ({
+          value: item.store,
+          label: item.store,
+          children: item.childen
+            .flatMap(child => [
+              ...child.ops.map(op => ({ value: '运营--' + op, label: '运营--' + op })),
+              ...child.brands.map(brand => ({ value: '品牌--' + brand, label: '品牌--' + brand }))
+            ])
+        }))
       }
+
     },
     methods: {
       // 获取
@@ -338,13 +239,10 @@
       async getProSelect() {
         this.proForm = await getProSelectList()
       },
-      // 表单验证
+      // 表单验证b
       validateName(rule, value, callback) {
-
+        console.log(value)
         // 方案1
-        console.log(rule, value, callback)
-        this.store = value
-
         // const selected = value || []
         // const storeOpPairs = []
         // const storeSet = new Set()
@@ -356,7 +254,7 @@
         //       opSet.set(storeId, new Set())
         //     }
         //     opSet.get(storeId).add(itemValue)
-        //   } else if (category === '品牌') {
+        //   } else if (category === '店铺') {
         //     if (!storeSet.has(itemValue)) {
         //       storeSet.add(itemValue)
         //       // 检查是否有匹配的运营
@@ -385,20 +283,16 @@
         //   callback()
         // }
         // 方案二
-        // const selected = value || []
-        // const storeOpPairs = []
-        // const storeSet = new Set()
-        // selected.forEach(path => {
-        //   const [storeId, category, itemValue] = path
-        //   console.log(storeId, category, itemValue, 'value')
-        //   if (category === '运营') {
-        //     if (category === '运营') {
-        //       if (!opSet.has(storeId)) {
-        //         opSet.set(storeId, new Set())
-        //       }
-        //     }
-        //   }
-        // })
+        const selected = value || []
+        const storeOpPairs = []
+        const storeSet = new Set()
+        selected.forEach(path => {
+          const [storeId, category, itemValue] = path
+          console.log(storeId, category, itemValue, 'value')
+          if (category === '运营') {
+
+          }
+        })
       },
       // 删除
       delProList() { },

@@ -281,18 +281,10 @@
           if (i.store == v) {
             i.childen.map(item => {
               this.brand = item.brands
-              this.op = item.ops
+              this.op = thitemis.ops
             })
-          } else if (i.store == d) {
-            console.log(111)
-            this.proFormValues.op_name = ''
-            this.proFormValues.brand_name = ''
           }
         })
-        // if (d) {
-        //   this.brand = ''
-        //   this.op = ''
-        // }
         console.log(this.store, this.op, this.brand, 'ces')
       }
     },

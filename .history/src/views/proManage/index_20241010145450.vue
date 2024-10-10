@@ -2,7 +2,7 @@
  * @Author: zhanxin11 749959696@qq.com
  * @Date: 2024-09-04 18:01:17
  * @LastEditors: zhanxin11 749959696@qq.com
- * @LastEditTime: 2024-10-10 15:17:53
+ * @LastEditTime: 2024-10-10 14:52:16
  * @FilePath: \vue-element-admin\src\views\proManage\index.vue
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
 -->
@@ -81,13 +81,13 @@
         </el-form-item>
         <el-form-item prop="brand" label="品牌" width="350px">
           <el-select v-model="proFormValues.brand_name" placeholder="请选择品牌" filterable collapse-tags>
-            <el-option v-for="(item,index) in brand" :key="index" :label="item" :value="item">
+            <el-option v-for="(item,index) in proForm.store_name" :key="index" :label="item" :value="item">
             </el-option>
           </el-select>
         </el-form-item>
         <el-form-item prop="ops" label="运营" width="350px">
-          <el-select v-model="proFormValues.op_name" placeholder="请选择运营" filterable collapse-tags>
-            <el-option v-for="(item,index) in op" :key="index" :label="item" :value="item">
+          <el-select v-model="proFormValues.status" placeholder="请选择运营" filterable collapse-tags>
+            <el-option v-for="(item,index) in proForm.status" :key="index" :label="item" :value="item">
             </el-option>
           </el-select>
         </el-form-item>
@@ -277,23 +277,11 @@
         let storeForm = this.proForm.store_brands_ops
         console.log(storeForm)
         storeForm.map(i => {
-          console.log(i.store, i)
+          console.log(i.store)
           if (i.store == v) {
-            i.childen.map(item => {
-              this.brand = item.brands
-              this.op = item.ops
-            })
-          } else if (i.store == d) {
-            console.log(111)
-            this.proFormValues.op_name = ''
-            this.proFormValues.brand_name = ''
+            console.log(i.store)
           }
         })
-        // if (d) {
-        //   this.brand = ''
-        //   this.op = ''
-        // }
-        console.log(this.store, this.op, this.brand, 'ces')
       }
     },
     computed: {

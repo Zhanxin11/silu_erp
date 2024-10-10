@@ -284,9 +284,8 @@
               this.op = item.ops
             })
           } else if (i.store == d) {
-            console.log(111)
-            this.proFormValues.op_name = ''
-            this.proFormValues.brand_name = ''
+            this.brand = ''
+            this.op = ''
           }
         })
         // if (d) {

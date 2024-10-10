@@ -283,10 +283,9 @@
               this.brand = item.brands
               this.op = item.ops
             })
-          } else if (i.store == d) {
-            console.log(111)
-            this.proFormValues.op_name = ''
-            this.proFormValues.brand_name = ''
+          }else if(i.store==d){
+            //   this.brand = ''
+        //   this.op = ''
           }
         })
         // if (d) {

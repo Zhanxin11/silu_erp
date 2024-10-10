@@ -283,16 +283,8 @@
               this.brand = item.brands
               this.op = item.ops
             })
-          } else if (i.store == d) {
-            console.log(111)
-            this.proFormValues.op_name = ''
-            this.proFormValues.brand_name = ''
           }
         })
-        // if (d) {
-        //   this.brand = ''
-        //   this.op = ''
-        // }
         console.log(this.store, this.op, this.brand, 'ces')
       }
     },
