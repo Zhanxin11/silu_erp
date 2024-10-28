@@ -1,0 +1,134 @@
+<!--
+ * @Author: zhanxin11 749959696@qq.com
+ * @Date: 2024-09-04 17:37:16
+ * @LastEditors: zhanxin11 749959696@qq.com
+ * @LastEditTime: 2024-10-24 11:37:47
+ * @FilePath: \vue-element-admin\src\views\proManage\proInformantion.vue
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<template>
+  <div class="app-container haplotype-detail default-scrollbar">
+    <el-row style="padding-bottom: 20px">
+      <el-button type="info" @click="addSpu">新增品类</el-button>
+      <el-button type="danger" @click="delSpuList">删除品类</el-button>
+      <el-button type="primary" @click="downloadSpuToExcel">下载</el-button>
+    </el-row>
+    <el-table :data="tableData" border style="width: 100%" :header-cell-style="tableHeaderColor" v-loading="loadingSpu">
+      <el-table-column type="selection" width="55">
+      </el-table-column>
+      <el-table-column prop="category" label="大类">
+      </el-table-column>
+      <el-table-column prop="category1" label="产品线">
+      </el-table-column>
+      <el-table-column prop="category2" label="细分品线">
+      </el-table-column>
+      <el-table-column prop="name" label="SPU">
+      </el-table-column>
+      <el-table-column prop='eidt' fixed="right" label="操作" width="150" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" size="small" @click="changeCategory(scope.$index,scope.row)">编辑</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <el-dialog class="dialog-box" title="新增品类" width="36%" :visible.sync="spuDialog">
+      <el-form :inline="true" label-width="80px" :model="spuFromValues" ref="spuFromValues" :rules="spuFromRules">
+        <el-form-item prop="category" label="大类">
+          <el-select v-model="spuFromValues.category" filterable allow-create>
+            <el-option v-for="(i,index) in catSelectForm" :key="index" :label="i.category" :value="i.category">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="category1" label="产品线" filterable allow-create>
+          <el-select v-model="spuFromValues.category1" placeholder="产品状态" filterable collapse-tags>
+            <el-option v-for="(item,index) in category1Value" :key="index" :label="item" :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button @click="saveSpu" type="primary">确认</el-button>
+        <el-button @click="spuDialog = false" class="cancelDialog">
+          取消
+        </el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+  import { getCatListApi, getCatSelectApi } from '@/api/manage'
+  export default {
+    components: {},
+    props: {},
+    data() {
+      return {
+        tableData: [],
+        catSelectForm: [],
+        spuDialog: false,
+        loadingSpu: true,
+        spuFromValues: {
+          category: '',
+          category1: '',
+          category2: '',
+          spu: ''
+        },
+        spuFromRules: {
+          category: [{}]
+        },
+
+      }
+    },
+    watch: {},
+    computed: {
+      category1Value() {
+        let arr = []
+        this.catSelectForm.map(i => {
+          if (i.childen) {
+            i.childen.map(item => {
+              arr.push(item.category1)
+            })
+          }
+        })
+        console.log(this.catSelectForm, arr)
+        return arr
+      },
+      category2Value() {
+        let arr = []
+        this.catSelectForm.map(i => {
+          if (i.childen) {
+            i.childen.map(item => {
+              if (i.childen) {}
+            })
+          }
+        })
+        console.log(this.catSelectForm, arr)
+        return arr
+      }
+    },
+    methods: {
+      async initData() {
+        this.tableData = await getCatListApi()
+        this.loadingSpu = false
+        this.catSelectForm = await getCatSelectApi()
+
+      },
+      addSpu() {
+        this.spuDialog = true
+      },
+      delSpuList() { },
+      saveSpu() { },
+      downloadSpuToExcel() { },
+      changeCategory() { },
+      // 表头颜色
+      tableHeaderColor({ row, column, rowIndex, columnIndex }) {
+        return 'background:	#F5F5F5; color:#000000;'
+      },
+    },
+    created() {
+      this.initData()
+    },
+    mounted() { }
+  };
+</script>
+<style lang="scss" scoped>
+</style>
