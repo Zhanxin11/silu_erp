@@ -572,7 +572,7 @@
           })
         }
       },
-      downloadToExcel() { },
+      downloadToExcel() { }
       // 表头颜色
       tableHeaderColor({ row, column, rowIndex, columnIndex }) {
         return 'background:	#F5F5F5; color:#000000;'
